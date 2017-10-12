@@ -252,8 +252,16 @@ class _LogInstance(dict):
         # Print to the main SP log file?
         if SP_LOG & areas:
 
+            # Patch for issue #211.
+            # Save/Overwrite the logger's name
+            name = _sp_logger.logger.name
+            _sp_logger.logger.name = self.logger.name
+
             # Print to the SP log file
             _sp_logger.logger.log(level, msg, *args, **kwargs)
+
+            # Restore the name
+            _sp_logger.logger.name = name
 
     @staticmethod
     def _get_level_value(level):

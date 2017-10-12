@@ -103,7 +103,7 @@ public:
 		for (int i=0; i < level; ++i)
 			x += "-";
 
-		PythonLog(-1, "%s%s", x.c_str(), GetName());
+		PythonLog(-1, "memory", "%s%s", x.c_str(), GetName());
 		for (unsigned int i=0; i < GetNumBaseClasses(); ++i) {
 			GetBaseClass(i)->Dump(level + 1);
 		}

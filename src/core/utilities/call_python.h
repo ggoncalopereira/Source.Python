@@ -75,39 +75,8 @@ T xdecref_and_return(T value)
     (3)  info
     (4)  debug
 */
-inline void PythonLog( const char* szLevel, const char* szFormat, ... )
-{
-	// Format the message
-	char szMessage[2048];
-	va_list args;
-	va_start(args, szFormat);
-	vsprintf(szMessage, szFormat, args);
-	va_end(args);
 
-	// Get the std::string instance of szMessage
-	std::string szMethod = szLevel;
-
-	// Get the method's name
-	std::string szMethodName = "log_" + szMethod;
-
-	BEGIN_BOOST_PY()
-
-		// Import the loggers module
-		object oLogModule = import("loggers");
-
-		// Get the main SP Logger instance
-		object oLogger = oLogModule.attr("_sp_logger");
-
-		// Get the PyObject instance of the logger
-		PyObject* poLogger = oLogger.ptr();
-
-		// Call the given method
-		call_method<void>( poLogger, szMethodName.c_str(), szMessage );
-
-	END_BOOST_PY()
-}
-
-inline void PythonLog( int iLevel, const char* szFormat, ... )
+inline void PythonLog( int iLevel, const char *szLogger, const char* szFormat, ... )
 {
 	// Format the message
 	char szMessage[2048];
@@ -123,6 +92,13 @@ inline void PythonLog( int iLevel, const char* szFormat, ... )
 
 		// Get the main SP Logger instance
 		object oLogger = oLogModule.attr("_sp_logger");
+
+		// Patch for issue #211.
+		if (szLogger != NULL) {
+			list childs = str(szLogger).split(".");
+			for (int iCurrentIndex=0; iCurrentIndex < len(childs); iCurrentIndex++)
+				oLogger = oLogger[childs[iCurrentIndex]];
+		}
 
 		// Get the PyObject instance logger
 		PyObject* poLogger = oLogger.ptr();

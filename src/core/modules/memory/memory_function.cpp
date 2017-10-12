@@ -342,6 +342,7 @@ void CFunction::AddHook(HookType_t eType, PyObject* pCallable)
 
 	PythonLog(
 		4,
+		"memory",
 		"Hooking function: type=%s, addr=%u, conv=%s, args=%s, rtype=%s, callback=%s",
 		szType,
 		m_ulAddr,

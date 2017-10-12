@@ -239,7 +239,7 @@ void SayConCommand::Dispatch( const CCommand& command )
 	}
 
 	if (!stripped_command.Tokenize(szCommand)) {
-		PythonLog(0, "Failed to tokenize '%s'.", command.GetCommandString());
+		PythonLog(0, "commands.say", "Failed to tokenize '%s'.", command.GetCommandString());
 		return;
 	}
 

@@ -104,34 +104,34 @@ void CBinaryFile::AddSignatureToCache(unsigned char* sigstr, int iLength, unsign
 
 bool CBinaryFile::SearchSigInCache(unsigned char* sigstr, CPointer*& result)
 {
-	PythonLog(4, "Searching for a cached signature...");
+	PythonLog(4, "memory", "Searching for a cached signature...");
 	for (std::list<Signature_t>::iterator iter=m_Signatures.begin(); iter != m_Signatures.end(); ++iter)
 	{
 		Signature_t sig = *iter;
 		if (strcmp((const char *) sig.m_szSignature, (const char *) sigstr) == 0)
 		{
-			PythonLog(4, "Found a cached signature!");
+			PythonLog(4, "memory", "Found a cached signature!");
 			result = new CPointer(sig.m_ulAddr);
 			return true;
 		}
 	}
-	PythonLog(4, "Could not find a cached signature.");
+	PythonLog(4, "memory", "Could not find a cached signature.");
 	return false;
 }
 
 bool CBinaryFile::SearchSigInBinary(object oSignature, int iLength, unsigned char* sigstr, CPointer*& result)
 {
-	PythonLog(4, "Searching in the binary...");
+	PythonLog(4, "memory", "Searching in the binary...");
 	CPointer* pPtr = FindSignatureRaw(oSignature);
 	if (pPtr->IsValid())
 	{
-		PythonLog(4, "Found a signature in the binary!");
+		PythonLog(4, "memory", "Found a signature in the binary!");
 		AddSignatureToCache(sigstr, iLength, pPtr->m_ulAddr);
 		result = pPtr;
 		return true;
 	}
 	delete pPtr;
-	PythonLog(4, "Could not find the signature in the binary.");
+	PythonLog(4, "memory", "Could not find the signature in the binary.");
 	return false;
 }
 
@@ -140,13 +140,13 @@ bool CBinaryFile::SearchSigHooked(object oSignature, int iLength, unsigned char*
 	CPointer* pPtr = FindSignatureRaw(oSignature);
 	if (!pPtr->IsValid())
 	{
-		PythonLog(4, "Could not find a hooked signature.");
+		PythonLog(4, "memory", "Could not find a hooked signature.");
 		delete pPtr;
 		return false;
 	}
 
-	PythonLog(4, "Found a hooked signature!");
-	PythonLog(4, "Checking if it's unique...");
+	PythonLog(4, "memory", "Found a hooked signature!");
+	PythonLog(4, "memory", "Checking if it's unique...");
 
 	// Add iLength, so we start searching after the match
 	CPointer new_ptr = CPointer(pPtr->m_ulAddr + len(oSignature));
@@ -159,7 +159,7 @@ bool CBinaryFile::SearchSigHooked(object oSignature, int iLength, unsigned char*
 	if (bIsValid)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Found more than one hooked signatures. Please pass more bytes.");
 
-	PythonLog(4, "Signature is unique!");
+	PythonLog(4, "memory", "Signature is unique!");
 	AddSignatureToCache(sigstr, iLength, pPtr->m_ulAddr);
 	result = pPtr;
 	return true;
@@ -182,7 +182,7 @@ CPointer* CBinaryFile::FindSignature(object oSignature)
 	object oHexSig = oSignature.attr("hex")();
 	const char* szHexSig = extract<const char*>(oHexSig);
 	
-	PythonLog(4, "Searching for a hooked signature (relative jump)...");
+	PythonLog(4, "memory", "Searching for a hooked signature (relative jump)...");
 	if (iLength <= 6)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Signature is too short to search for a hooked signature (relative jump): %s", szHexSig);
 
@@ -191,7 +191,7 @@ CPointer* CBinaryFile::FindSignature(object oSignature)
 	if (SearchSigHooked(oSignature, iLength, sigstr, result))
 		return result;
 	
-	PythonLog(4, "Searching for a hooked signature (absolute jump)...");
+	PythonLog(4, "memory", "Searching for a hooked signature (absolute jump)...");
 	if (iLength <= 7)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Signature is too short to search for a hooked signature (absolute jump): %s", szHexSig);
 

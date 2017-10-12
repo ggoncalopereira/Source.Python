@@ -548,7 +548,7 @@ PLUGIN_RESULT CSourcePython::NetworkIDValidated( const char *pszUserName, const 
 void CSourcePython::OnQueryCvarValueFinished( QueryCvarCookie_t iCookie, edict_t *pPlayerEntity,
 	EQueryCvarValueStatus eStatus, const char *pCvarName, const char *pCvarValue )
 {
-	PythonLog(4, "Cvar query (cookie: %d, status: %d) - name: %s, value: %s", iCookie, eStatus, pCvarName, pCvarValue );
+	PythonLog(4, "listeners", "Cvar query (cookie: %d, status: %d) - name: %s, value: %s", iCookie, eStatus, pCvarName, pCvarValue );
 	unsigned int iEntityIndex;
 	if (!IndexFromEdict(pPlayerEntity, iEntityIndex))
 		return;
