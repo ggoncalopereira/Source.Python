@@ -252,16 +252,14 @@ class _LogInstance(dict):
         # Print to the main SP log file?
         if SP_LOG & areas:
 
-            # Patch for issue #211.
-            # Save/Overwrite the logger's name
-            name = _sp_logger.logger.name
-            _sp_logger.logger.name = self.logger.name
+            # Get the given extra dictionary
+            extra = kwargs.setdefault('extra', dict())
+
+            # Set the logger name
+            extra.setdefault('logger_name', self.logger.name)
 
             # Print to the SP log file
             _sp_logger.logger.log(level, msg, *args, **kwargs)
-
-            # Restore the name
-            _sp_logger.logger.name = name
 
     @staticmethod
     def _get_level_value(level):
@@ -406,7 +404,7 @@ _areas = ConVar(
 _sp_logger = LogManager(
     'sp', _level, _areas,
     'source-python.{0}'.format(date.today().strftime('%Y-%m-%d')),
-    '%(asctime)s - %(name)s\t-\t%(levelname)s\t%(message)s',
+    '%(asctime)s - %(logger_name)s\t-\t%(levelname)s\t%(message)s',
     '%Y-%m-%d %H:%M:%S')
 
 # Set the parent logger level to allow all message types
