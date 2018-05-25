@@ -32,6 +32,7 @@
 #include "sp_main.h"
 
 // SDK
+#include "cbase.h"
 #include "game/shared/gamerules.h"
 
 
